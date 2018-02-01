@@ -7,6 +7,7 @@ export class Store {
     reducers = {},
     initialState = {},
   ) {
+    this.subscribers = [];
     this.reducers = reducers;
     this.state = this.reduce(initialState, {});
   }
@@ -17,7 +18,18 @@ export class Store {
 
   public dispatch(action: IAction) {
     this.state = this.reduce(this.state, action);
-    console.log(this.state);
+    this.subscribers.forEach(sub => {
+      sub(this.state);
+    });
+  }
+
+  public subscribe(fn: Function) {
+    this.subscribers = [
+      ...this.subscribers,
+      fn,
+    ]
+
+    fn(this.state);
   }
 
   private reduce(state: IState, action: IAction): IState {

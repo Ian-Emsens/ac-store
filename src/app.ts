@@ -15,8 +15,6 @@ const reducers: IReducers = {
 
 const store = new fromStore.Store(reducers);
 
-console.log(store.value);
-
 button.addEventListener(
   'click',
   () => {
@@ -24,15 +22,17 @@ button.addEventListener(
 
     const payload = { label: input.value, complete: false };
 
-    store.dispatch({
-      type: 'ADD_TODO',
-      payload,
-    });
+    store.dispatch(new fromStore.AddTodo(payload));
 
     input.value = '';
   },
   false
 );
+
+store.subscribe((state) => {
+  console.log('STATE -',state);
+  renderTodos(state.todos.data);
+});
 
 todoList.addEventListener('click', function(event) {
   const target = event.target as HTMLButtonElement;
